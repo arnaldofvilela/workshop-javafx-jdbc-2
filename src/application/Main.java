@@ -9,6 +9,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+	
+	private static Scene mainScene;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		try {
@@ -27,7 +30,7 @@ public class Main extends Application {
 			// instancia a cena passando como argumento o objeto principal da view (que foi
 			// declarado acima)
 			// [ que nesse caso vai ser o AnchorPane vazio
-			Scene mainScene = new Scene(scrollPane);
+			mainScene = new Scene(scrollPane);
 			// faz o set da cena como sendo a mainScene declarada acima
 			primaryStage.setScene(mainScene);
 			// Define o título do palco
@@ -39,6 +42,10 @@ public class Main extends Application {
 		}
 	}
 
+	public static Scene getMainScene() {
+		return mainScene;
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
