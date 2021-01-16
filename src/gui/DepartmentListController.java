@@ -9,6 +9,7 @@ import application.Main;
 import gui.listener.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -18,6 +19,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -41,18 +43,23 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	private TableColumn<Department, String> tableColumnName;
 
 	@FXML
+	private TableColumn<Department, Department> tableColumnEDIT;
+
+	@FXML
 	private Button btNew;
 
 	private ObservableList<Department> obsList;
 
 	@FXML
-	//ActionEvent event -> destinado a ter uma referência do controle que receber o evento
+	// ActionEvent event -> destinado a ter uma referência do controle que receber o
+	// evento
 	public void onBtNewAction(ActionEvent event) {
-		//pega uma referência para o stage atual
+		// pega uma referência para o stage atual
 		Stage parentStage = Utils.currentStage(event);
-		//como é um botão para cadastrar um novo departamento, o formulário vai começar vazio como abaixo
+		// como é um botão para cadastrar um novo departamento, o formulário vai começar
+		// vazio como abaixo
 		Department obj = new Department();
-		//passa essa referência para criar a nova janela
+		// passa essa referência para criar a nova janela
 		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);
 	}
 
@@ -92,7 +99,8 @@ public class DepartmentListController implements Initializable, DataChangeListen
 		obsList = FXCollections.observableArrayList(list);
 		// carrega os itens na tableView para que sejam mostrados na tela
 		tableViewDepartment.setItems(obsList);
-
+		//acrescenta um botão com a palavra "edit" em cada linha da tabela
+		initEditButtons();
 	}
 
 	// no parâmetro é uma referência ao stage que criou a janela de diálogo
@@ -105,13 +113,13 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			// carrega a view
 			Pane pane = loader.load();
 
-			//pega o controlador da tela que acabou de ser carregada acima
+			// pega o controlador da tela que acabou de ser carregada acima
 			DepartmentFormController controller = loader.getController();
 			controller.setDepartment(obj);
 			controller.setDepartmentService(new DepartmentService());
 			controller.subscribeDataChangeListener(this);
 			controller.updateFormData();
-			
+
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter Department data");
 			dialogStage.setScene(new Scene(pane));
@@ -125,8 +133,7 @@ public class DepartmentListController implements Initializable, DataChangeListen
 			dialogStage.initModality(Modality.WINDOW_MODAL);
 			dialogStage.showAndWait();
 
-		} 
-		catch (IOException e) {
+		} catch (IOException e) {
 			Alerts.showAlert("IOException", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
@@ -134,5 +141,24 @@ public class DepartmentListController implements Initializable, DataChangeListen
 	@Override
 	public void onDataChanged() {
 		updateTableView();
+	}
+
+	private void initEditButtons() {
+		tableColumnEDIT.setCellValueFactory(param -> new ReadOnlyObjectWrapper<>(param.getValue()));
+		tableColumnEDIT.setCellFactory(param -> new TableCell<Department, Department>() {
+			private final Button button = new Button("edit");
+
+			@Override
+			protected void updateItem(Department obj, boolean empty) {
+				super.updateItem(obj, empty);
+				if (obj == null) {
+					setGraphic(null);
+					return;
+				}
+				setGraphic(button);
+				button.setOnAction(
+						event -> createDialogForm(obj, "/gui/DepartmentForm.fxml", Utils.currentStage(event)));
+			}
+		});
 	}
 }
