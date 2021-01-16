@@ -49,8 +49,10 @@ public class DepartmentListController implements Initializable {
 	public void onBtNewAction(ActionEvent event) {
 		//pega uma referência para o stage atual
 		Stage parentStage = Utils.currentStage(event);
+		//como é um botão para cadastrar um novo departamento, o formulário vai começar vazio como abaixo
+		Department obj = new Department();
 		//passa essa referência para criar a nova janela
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
+		createDialogForm(obj, "/gui/DepartmentForm.fxml", parentStage);
 	}
 
 	public void setDepartmentService(DepartmentService service) {
@@ -94,7 +96,7 @@ public class DepartmentListController implements Initializable {
 
 	// no parâmetro é uma referência ao stage que criou a janela de diálogo
 	// para mostrar quem é o stage que criou a janela de diálogo
-	private void createDialogForm(String absoluteName, Stage parentStage) {
+	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
 		try {
 			// carrega a visualização de outra tela na frente da tela principal (arquivo
 			// .fxml)
@@ -102,6 +104,11 @@ public class DepartmentListController implements Initializable {
 			// carrega a view
 			Pane pane = loader.load();
 
+			//pega o controlador da tela que acabou de ser carregada acima
+			DepartmentFormController controller = loader.getController();
+			controller.setDepartment(obj);
+			controller.updateFormData();
+			
 			Stage dialogStage = new Stage();
 			dialogStage.setTitle("Enter Department data");
 			dialogStage.setScene(new Scene(pane));
