@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +17,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -24,6 +27,8 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
 import model.services.SellerService;
@@ -124,36 +129,36 @@ public class SellerListController implements Initializable, DataChangeListener {
 	// no parâmetro é uma referência ao stage que criou a janela de diálogo
 	// para mostrar quem é o stage que criou a janela de diálogo
 	private void createDialogForm(Seller obj, String absoluteName, Stage parentStage) {
-//		try {
-//			// carrega a visualização de outra tela na frente da tela principal (arquivo
-//			// .fxml)
-//			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-//			// carrega a view
-//			Pane pane = loader.load();
-//
-//			// pega o controlador da tela que acabou de ser carregada acima
-//			SellerFormController controller = loader.getController();
-//			controller.setSeller(obj);
-//			controller.setSellerService(new SellerService());
-//			controller.subscribeDataChangeListener(this);
-//			controller.updateFormData();
-//
-//			Stage dialogStage = new Stage();
-//			dialogStage.setTitle("Enter Seller data");
-//			dialogStage.setScene(new Scene(pane));
-//			dialogStage.setResizable(false);
-//			// define quem é o stage pai desta janela, neste caso o parentStage
-//			// por esse motivo foi necessário pegar essa informação por parâmetro no início
-//			// do método
-//			dialogStage.initOwner(parentStage);
-//			// faz a janela ser modal
-//			// enquanto não fechar ela não consegue acessar a janela anterior
-//			dialogStage.initModality(Modality.WINDOW_MODAL);
-//			dialogStage.showAndWait();
-//
-//		} catch (IOException e) {
-//			Alerts.showAlert("IOException", "Error loading view", e.getMessage(), AlertType.ERROR);
-//		}
+		try {
+			// carrega a visualização de outra tela na frente da tela principal (arquivo
+			// .fxml)
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			// carrega a view
+			Pane pane = loader.load();
+
+			// pega o controlador da tela que acabou de ser carregada acima
+			SellerFormController controller = loader.getController();
+			controller.setSeller(obj);
+			controller.setSellerService(new SellerService());
+			controller.subscribeDataChangeListener(this);
+			controller.updateFormData();
+
+			Stage dialogStage = new Stage();
+			dialogStage.setTitle("Enter Seller data");
+			dialogStage.setScene(new Scene(pane));
+			dialogStage.setResizable(false);
+			// define quem é o stage pai desta janela, neste caso o parentStage
+			// por esse motivo foi necessário pegar essa informação por parâmetro no início
+			// do método
+			dialogStage.initOwner(parentStage);
+			// faz a janela ser modal
+			// enquanto não fechar ela não consegue acessar a janela anterior
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			dialogStage.showAndWait();
+
+		} catch (IOException e) {
+			Alerts.showAlert("IOException", "Error loading view", e.getMessage(), AlertType.ERROR);
+		}
 	}
 
 	@Override
